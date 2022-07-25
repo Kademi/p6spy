@@ -52,7 +52,7 @@ public class EventListenerServiceLoaderTest {
   public void testServiceLoaderFromWrapConnection() throws Exception {
     final Connection connectionMock = mock(Connection.class);
     @SuppressWarnings("resource")
-    final Connection connection = ConnectionWrapper.wrap(connectionMock, new DefaultJdbcEventListenerFactory().createJdbcEventListener(), ConnectionInformation.fromTestConnection(connectionMock));
+    final Connection connection = ConnectionWrapper.wrap(connectionMock, new DefaultJdbcEventListenerFactory().createJdbcEventListener(), ConnectionInformation.fromTestConnection(connectionMock), null);
     assertTrue(connection instanceof ConnectionWrapper);
     ConnectionWrapper connectionWrapper = (ConnectionWrapper) connection;
     final JdbcEventListener eventListener = connectionWrapper.getEventListener();

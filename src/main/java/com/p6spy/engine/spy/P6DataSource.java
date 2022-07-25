@@ -57,7 +57,7 @@ public class P6DataSource implements DataSource, ConnectionPoolDataSource, XADat
   protected transient CommonDataSource realDataSource;
   protected String rdsName;
   protected transient JdbcEventListenerFactory jdbcEventListenerFactory;
-  
+
   /**
    * Default no-arg constructor for Serialization
    */
@@ -285,9 +285,9 @@ public class P6DataSource implements DataSource, ConnectionPoolDataSource, XADat
     if (realDataSource == null) {
       bindDataSource();
     }
-    
+
     final long start = System.nanoTime();
-    
+
     if (this.jdbcEventListenerFactory == null) {
       this.jdbcEventListenerFactory = JdbcEventListenerFactoryLoader.load();
     }
@@ -310,17 +310,17 @@ public class P6DataSource implements DataSource, ConnectionPoolDataSource, XADat
       throw e;
     }
 
-    return ConnectionWrapper.wrap(conn, jdbcEventListener, connectionInformation);
+    return ConnectionWrapper.wrap(conn, jdbcEventListener, connectionInformation, null);
   }
-  
+
   @Override
   public Connection getConnection(String username, String password) throws SQLException {
     if (realDataSource == null) {
       bindDataSource();
     }
-    
+
     final long start = System.nanoTime();
-    
+
     if (this.jdbcEventListenerFactory == null) {
       this.jdbcEventListenerFactory = JdbcEventListenerFactoryLoader.load();
     }
@@ -340,7 +340,7 @@ public class P6DataSource implements DataSource, ConnectionPoolDataSource, XADat
       throw e;
     }
 
-    return ConnectionWrapper.wrap(conn, jdbcEventListener, connectionInformation);
+    return ConnectionWrapper.wrap(conn, jdbcEventListener, connectionInformation, null);
   }
 
   @Override

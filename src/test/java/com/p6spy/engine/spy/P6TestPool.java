@@ -69,7 +69,7 @@ public class P6TestPool extends P6TestFramework {
               }
             }, //
             ConnectionInformation.fromTestConnection(this.connection) //
-        ) //
+        , null) //
     ) {
       P6TestUtil.execute(connectionWrapper, query);
     }

@@ -47,9 +47,9 @@ public class ConnectionWrapperTest {
               }
             }, //
             ConnectionInformation.fromDataSource( //
-                mock(DataSource.class), // 
+                mock(DataSource.class), //
                 connection, //
-                42))
+                42), null)
         ) {
       assertTrue(onConnectionWrappedCalled);
     }

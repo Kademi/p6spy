@@ -149,14 +149,14 @@ public class CompoundJdbcEventListenerTest {
     resultSetInformation = new ResultSetInformation(statementInformation);
 
     @SuppressWarnings("resource")
-    Connection connectionWrapper = ConnectionWrapper.wrap(mockedConnection, mockedJdbcListener, connectionInformation);
+    Connection connectionWrapper = ConnectionWrapper.wrap(mockedConnection, mockedJdbcListener, connectionInformation, null);
     wrappedConnection = connectionWrapper;
     verify(mockedJdbcListener).onConnectionWrapped(eq(connectionInformation));
     wrappedStatement = StatementWrapper.wrap(mockedStatement, statementInformation, mockedJdbcListener);
     wrappedPreparedStatement = PreparedStatementWrapper.wrap(mockedPreparedStatement, preparedStatementInformation,
-        mockedJdbcListener);
+        mockedJdbcListener, null);
     wrappedCallableStatement = CallableStatementWrapper.wrap(mockedCallableStatement, callableStatementInformation,
-        mockedJdbcListener);
+        mockedJdbcListener, null);
     wrappedResultSet = ResultSetWrapper.wrap(mockedResultSet, resultSetInformation, mockedJdbcListener);
 
     P6SpyDriver.setJdbcEventListenerFactory(new JdbcEventListenerFactory() {
@@ -1102,7 +1102,7 @@ public class CompoundJdbcEventListenerTest {
     SQLException sqle = new SQLException();
     Connection mockedConnection = mock(Connection.class);
     doThrow(sqle).when(mockedConnection).setAutoCommit(false);
-    Connection connectionWrapper = ConnectionWrapper.wrap(mockedConnection, mockedJdbcListener, connectionInformation);
+    Connection connectionWrapper = ConnectionWrapper.wrap(mockedConnection, mockedJdbcListener, connectionInformation, null);
     boolean currentAutoCommit = connectionWrapper.getAutoCommit();
     try {
       connectionWrapper.setAutoCommit(false);

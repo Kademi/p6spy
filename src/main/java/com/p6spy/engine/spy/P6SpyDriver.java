@@ -93,6 +93,21 @@ public class P6SpyDriver implements Driver {
     if (P6SpyDriver.jdbcEventListenerFactory == null) {
       P6SpyDriver.jdbcEventListenerFactory = JdbcEventListenerFactoryLoader.load();
     }
+
+    //Get the filter class from properties, and instantiate it
+    SpyFilter filter;
+    String filterClassName = properties.getProperty("filter");
+    if( filterClassName != null && filterClassName.length() > 0 ) {
+        try {
+            Class filterClass = Class.forName(filterClassName);
+            filter = (SpyFilter) filterClass.getDeclaredConstructor().newInstance();
+        } catch( Exception ex ) {
+            throw new RuntimeException("Couldnt instantiate filter class: " + filterClassName, ex);
+        }
+    } else {
+        filter = null;
+    }
+
     final Connection conn;
     final JdbcEventListener jdbcEventListener = P6SpyDriver.jdbcEventListenerFactory.createJdbcEventListener();
     final ConnectionInformation connectionInformation = ConnectionInformation.fromDriver(passThru);
@@ -109,13 +124,13 @@ public class P6SpyDriver implements Driver {
       throw e;
     }
 
-    return ConnectionWrapper.wrap(conn, jdbcEventListener, connectionInformation);
+    return ConnectionWrapper.wrap(conn, jdbcEventListener, connectionInformation, filter);
   }
 
   protected Driver findPassthru(String url) throws SQLException {
     // registers the passthru drivers, if configured s
     P6ModuleManager.getInstance();
-    
+
     String realUrl = extractRealUrl(url);
     Driver passthru = null;
     for (Driver driver: registeredDrivers() ) {
@@ -160,7 +175,7 @@ public class P6SpyDriver implements Driver {
   public Logger getParentLogger() throws SQLFeatureNotSupportedException {
     throw new SQLFeatureNotSupportedException("Feature not supported");
   }
-  
+
   public static void setJdbcEventListenerFactory(JdbcEventListenerFactory jdbcEventListenerFactory) {
     P6SpyDriver.jdbcEventListenerFactory = jdbcEventListenerFactory;
   }

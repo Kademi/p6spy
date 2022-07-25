@@ -38,6 +38,7 @@ import java.util.Map;
 
 import com.p6spy.engine.common.CallableStatementInformation;
 import com.p6spy.engine.event.JdbcEventListener;
+import com.p6spy.engine.spy.SpyFilter;
 
 /**
  * This implementation wraps a {@link CallableStatement}  and notifies a {@link JdbcEventListener}
@@ -53,15 +54,15 @@ public class CallableStatementWrapper extends PreparedStatementWrapper implement
   private final CallableStatement delegate;
   private final CallableStatementInformation statementInformation;
 
-  public static CallableStatement wrap(CallableStatement delegate, CallableStatementInformation callableStatementInformation, JdbcEventListener eventListener) {
+  public static CallableStatement wrap(CallableStatement delegate, CallableStatementInformation callableStatementInformation, JdbcEventListener eventListener, SpyFilter filter) {
     if (delegate == null) {
       return null;
     }
-    return new CallableStatementWrapper(delegate, callableStatementInformation, eventListener);
+    return new CallableStatementWrapper(delegate, callableStatementInformation, eventListener, filter);
   }
 
-  protected CallableStatementWrapper(CallableStatement delegate, CallableStatementInformation callableStatementInformation, JdbcEventListener eventListener) {
-    super(delegate, callableStatementInformation, eventListener);
+  protected CallableStatementWrapper(CallableStatement delegate, CallableStatementInformation callableStatementInformation, JdbcEventListener eventListener, SpyFilter filter) {
+    super(delegate, callableStatementInformation, eventListener, filter);
     this.delegate = delegate;
     statementInformation = callableStatementInformation;
   }

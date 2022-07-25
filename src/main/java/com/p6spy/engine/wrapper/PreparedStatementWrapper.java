@@ -20,6 +20,7 @@ package com.p6spy.engine.wrapper;
 import com.p6spy.engine.common.PreparedStatementInformation;
 import com.p6spy.engine.common.ResultSetInformation;
 import com.p6spy.engine.event.JdbcEventListener;
+import com.p6spy.engine.spy.SpyFilter;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -41,6 +42,7 @@ import java.sql.SQLXML;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.concurrent.Callable;
 
 /**
  * This implementation wraps a {@link PreparedStatement}  and notifies a {@link JdbcEventListener}
@@ -55,22 +57,37 @@ public class PreparedStatementWrapper extends StatementWrapper implements Prepar
 
   private final PreparedStatement delegate;
   private final PreparedStatementInformation statementInformation;
+  private final SpyFilter filter;
 
-  public static PreparedStatement wrap(PreparedStatement delegate, PreparedStatementInformation preparedStatementInformation, JdbcEventListener eventListener) {
+  public static PreparedStatement wrap(PreparedStatement delegate, PreparedStatementInformation preparedStatementInformation, JdbcEventListener eventListener, SpyFilter filter) {
     if (delegate == null) {
       return null;
     }
-    return new PreparedStatementWrapper(delegate, preparedStatementInformation, eventListener);
+    return new PreparedStatementWrapper(delegate, preparedStatementInformation, eventListener, filter);
   }
 
-  protected PreparedStatementWrapper(PreparedStatement delegate, PreparedStatementInformation preparedStatementInformation, JdbcEventListener eventListener) {
+  protected PreparedStatementWrapper(PreparedStatement delegate, PreparedStatementInformation preparedStatementInformation, JdbcEventListener eventListener, SpyFilter filter) {
     super(delegate, preparedStatementInformation, eventListener);
     this.delegate = delegate;
     statementInformation = preparedStatementInformation;
+    this.filter = filter;
   }
 
   @Override
   public ResultSet executeQuery() throws SQLException {
+    if( filter == null ) {
+        return _executeQuery();
+    } else {
+        return filter.executeQuery(statementInformation, new Callable<ResultSet>() {
+            @Override
+            public ResultSet call() throws Exception {
+                return _executeQuery();
+            }
+        });
+    }
+  }
+
+  private ResultSet _executeQuery() throws SQLException {
     SQLException e = null;
     long start = System.nanoTime();
     try {
@@ -86,6 +103,19 @@ public class PreparedStatementWrapper extends StatementWrapper implements Prepar
 
   @Override
   public int executeUpdate() throws SQLException {
+    if( filter == null ) {
+        return _executeUpdate();
+    } else {
+        return filter.executeUpdate(statementInformation, new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                return _executeUpdate();
+            }
+        });
+    }
+  }
+
+  private int _executeUpdate() throws SQLException {
     SQLException e = null;
     long start = System.nanoTime();
     int rowCount = 0;
@@ -355,6 +385,19 @@ public class PreparedStatementWrapper extends StatementWrapper implements Prepar
 
   @Override
   public boolean execute() throws SQLException {
+    if( filter == null ) {
+        return _execute();
+    } else {
+        return filter.execute(statementInformation, new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                return _execute();
+            }
+        });
+    }
+  }
+
+  private boolean _execute() throws SQLException {
     SQLException e = null;
     long start = System.nanoTime();
     try {

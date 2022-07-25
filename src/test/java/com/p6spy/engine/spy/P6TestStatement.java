@@ -72,7 +72,7 @@ public class P6TestStatement extends P6TestFramework {
                 eventListenerRowCount[0] = rowCount;
               }
             }, //
-            ConnectionInformation.fromTestConnection(this.connection))
+            ConnectionInformation.fromTestConnection(this.connection), null)
         ) {
       int rowCount = P6TestUtil.executeUpdate(connectionWrapper, query);
       assertEquals(1, rowCount);
@@ -103,7 +103,7 @@ public class P6TestStatement extends P6TestFramework {
               }
             }, //
             ConnectionInformation.fromTestConnection(this.connection) //
-        ); Statement stmt = connectionWrapper.createStatement() //
+        , null); Statement stmt = connectionWrapper.createStatement() //
     ) {
       String sql = "insert into customers(name,id) values ('jim', 101)";
       stmt.addBatch(sql);
@@ -122,24 +122,24 @@ public class P6TestStatement extends P6TestFramework {
       assertEquals(2, P6TestUtil.queryForInt(connection, "select count(*) from customers where id > 100"));
     }
   }
-  
+
   @Test
   public void testExecuteEmptyBatchWithIncludeExcludeEmpty() throws SQLException {
     Statement stmt = connection.createStatement();
     stmt.executeBatch();
     stmt.close();
   }
-  
+
 	@Test
 	public void testExecuteEmptyBatchWithIncludeExcludeNonEmpty()
 			throws SQLException {
 		P6LogOptions.getActiveInstance().setExclude("foo");
 		P6LogOptions.getActiveInstance().setInclude("foo");
-		
+
 		Statement stmt = connection.createStatement();
 		stmt.executeBatch();
 		stmt.close();
-		
+
 		P6LogOptions.getActiveInstance().setExclude("");
 		P6LogOptions.getActiveInstance().setInclude("");
 	}

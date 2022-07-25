@@ -57,7 +57,7 @@ public class P6PooledConnection implements PooledConnection {
       throw e;
     }
 
-    return ConnectionWrapper.wrap(conn, jdbcEventListener, connectionInformation);
+    return ConnectionWrapper.wrap(conn, jdbcEventListener, connectionInformation, null);
   }
 
   @Override
