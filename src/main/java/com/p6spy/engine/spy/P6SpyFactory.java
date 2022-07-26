@@ -31,4 +31,9 @@ public class P6SpyFactory implements P6Factory {
   public JdbcEventListener getJdbcEventListener() {
     return null;
   }
+
+    @Override
+    public SpyFilter getFilter() {
+        return null;
+    }
 }

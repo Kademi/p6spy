@@ -29,7 +29,7 @@ import com.p6spy.engine.event.JdbcEventListener;
  * Default {@link JdbcEventListenerFactory} implementation providing all the
  * {@link JdbcEventListener}s supplied by the {@link P6Factory}ies as well as
  * those registered by {@link ServiceLoader}s.
- * 
+ *
  * @author Peter Butkovic
  * @since 3.3.0
  *
@@ -38,9 +38,9 @@ public class DefaultJdbcEventListenerFactory implements JdbcEventListenerFactory
 
   private static ServiceLoader<JdbcEventListener> jdbcEventListenerServiceLoader = //
       ServiceLoader.load(JdbcEventListener.class, DefaultJdbcEventListenerFactory.class.getClassLoader());
-  
+
   private static volatile JdbcEventListener jdbcEventListener;
-  
+
   @Override
   public JdbcEventListener createJdbcEventListener() {
     if (jdbcEventListener == null) {
@@ -54,14 +54,14 @@ public class DefaultJdbcEventListenerFactory implements JdbcEventListenerFactory
         }
       }
     }
-    
+
     return jdbcEventListener;
   }
-  
+
   public static void clearCache() {
     jdbcEventListener = null;
   }
-  
+
   protected void registerEventListenersFromFactories(CompoundJdbcEventListener compoundEventListener) {
     List<P6Factory> factories = P6ModuleManager.getInstance().getFactories();
     if (factories != null) {
@@ -79,5 +79,19 @@ public class DefaultJdbcEventListenerFactory implements JdbcEventListenerFactory
       compoundEventListener.addListener(iterator.next());
     }
   }
-  
+
+  @Override
+  public SpyFilter createJdbcFilter() {
+    List<P6Factory> factories = P6ModuleManager.getInstance().getFactories();
+    if (factories != null) {
+      for (P6Factory factory : factories) {
+          SpyFilter filter = factory.getFilter();
+          if( filter != null ) {
+              return filter;
+          }
+      }
+    }
+    return null;
+  }
+
 }

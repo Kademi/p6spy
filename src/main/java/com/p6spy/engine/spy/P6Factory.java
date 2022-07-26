@@ -35,4 +35,8 @@ public interface P6Factory {
 
   JdbcEventListener getJdbcEventListener();
 
+  default SpyFilter getFilter() {
+      return null;
+  }
+
 }

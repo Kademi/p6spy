@@ -45,5 +45,4 @@ public class P6LogFactory implements P6Factory {
   public P6LoadableOptions getOptions(P6OptionsRepository optionsRepository) {
     return new P6LogOptions(optionsRepository);
   }
-
 }

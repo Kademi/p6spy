@@ -94,22 +94,9 @@ public class P6SpyDriver implements Driver {
       P6SpyDriver.jdbcEventListenerFactory = JdbcEventListenerFactoryLoader.load();
     }
 
-    //Get the filter class from properties, and instantiate it
-    SpyFilter filter;
-    String filterClassName = properties.getProperty("filter");
-    if( filterClassName != null && filterClassName.length() > 0 ) {
-        try {
-            Class filterClass = Class.forName(filterClassName);
-            filter = (SpyFilter) filterClass.getDeclaredConstructor().newInstance();
-        } catch( Exception ex ) {
-            throw new RuntimeException("Couldnt instantiate filter class: " + filterClassName, ex);
-        }
-    } else {
-        filter = null;
-    }
-
     final Connection conn;
     final JdbcEventListener jdbcEventListener = P6SpyDriver.jdbcEventListenerFactory.createJdbcEventListener();
+    SpyFilter filter = P6SpyDriver.jdbcEventListenerFactory.createJdbcFilter();
     final ConnectionInformation connectionInformation = ConnectionInformation.fromDriver(passThru);
     connectionInformation.setUrl(url);
     jdbcEventListener.onBeforeGetConnection(connectionInformation);

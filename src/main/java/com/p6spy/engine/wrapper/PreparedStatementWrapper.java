@@ -42,7 +42,6 @@ import java.sql.SQLXML;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
-import java.util.concurrent.Callable;
 
 /**
  * This implementation wraps a {@link PreparedStatement}  and notifies a {@link JdbcEventListener}
@@ -78,12 +77,7 @@ public class PreparedStatementWrapper extends StatementWrapper implements Prepar
     if( filter == null ) {
         return _executeQuery();
     } else {
-        return filter.executeQuery(statementInformation, new Callable<ResultSet>() {
-            @Override
-            public ResultSet call() throws Exception {
-                return _executeQuery();
-            }
-        });
+        return filter.executeQuery(statementInformation, this::_executeQuery);
     }
   }
 
@@ -106,12 +100,7 @@ public class PreparedStatementWrapper extends StatementWrapper implements Prepar
     if( filter == null ) {
         return _executeUpdate();
     } else {
-        return filter.executeUpdate(statementInformation, new Callable<Integer>() {
-            @Override
-            public Integer call() throws Exception {
-                return _executeUpdate();
-            }
-        });
+        return filter.executeUpdate(statementInformation, this::_executeUpdate);
     }
   }
 
@@ -388,12 +377,7 @@ public class PreparedStatementWrapper extends StatementWrapper implements Prepar
     if( filter == null ) {
         return _execute();
     } else {
-        return filter.execute(statementInformation, new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return _execute();
-            }
-        });
+        return filter.execute(statementInformation, this::_execute);
     }
   }
 
